@@ -15,17 +15,6 @@ app.get('/', function(req, res) {
 });
 
 
-/*exports.testNoService = function(test) {
-    test.throws(app.use(auth()));
-    test.done();
-};
-
-exports.testInitService = function(test) {
-    test.doesNotThrow(app.use(auth));
-    test.done();
-}*/
-
-
 describe('Middleware', function() {
 
     describe('.auth()', function() {
@@ -40,7 +29,8 @@ describe('Middleware', function() {
         });
     });
 });
-/*        it('respond', function(done) {
+    describe('GET /')
+     it('respond', function(done) {
         request(app)
         .get('/')
         .expect(200)
