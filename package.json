@@ -15,6 +15,7 @@
     },
     
     "devDependencies": {
+        "express": "*",
         "supertest": "*",
         "mocha": "*", 
         "zombie": "*"
