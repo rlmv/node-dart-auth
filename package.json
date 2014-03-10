@@ -3,8 +3,20 @@
     "name": "dart-auth",
     "version": "0.1.0",
     "description": "Connect middleware for Dartmouth CAS authentication",
+
     "main": "index",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rlmv/node-dart-auth.git"
+    },
+
     "dependencies": {
         "xml2js": "*"
+    },
+    
+    "devDependencies": {
+        "supertest": "*",
+        "mocha": "*", 
+        "zombie": "*"
     }
 }
