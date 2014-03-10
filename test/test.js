@@ -10,15 +10,14 @@ var app = express();
 app.use(express.cookieParser('secret'));
 app.use(express.session());
 
+app.use(auth({ service: 't' }));
 app.get('/', function(req, res) {
     res.send(200, {name: 'tobi'});
 });
 
-
-describe('Middleware', function() {
-
+describe('Initialization', function() {
     describe('.auth()', function() {
-        it('should throw error because of no service', function() {
+        it('should throw error because of no service option', function() {
             assert.throws(auth); // equiv to calling ()
         });
     });
@@ -29,16 +28,21 @@ describe('Middleware', function() {
         });
     });
 });
-    describe('GET /')
-     it('respond', function(done) {
-        request(app)
-        .get('/')
-        .expect(200)
-        .end(function(err, res) {
-            if (err) throw err;
-        });
+
+describe('Should redirect GET /', function() {
+ it('respond', function(done) {
+    request(app)
+    .get('/')
+    .expect(307)
+    .end(function(err, res) {
+        if (err) throw err;
+        var location = res.get('location'); // pull redirect url
+
+        done();
     });
-*/
+ });
+});
+
 
 
 
