@@ -38,6 +38,7 @@ describe('Initialization', function() {
     });
 });
 
+
 describe('Should redirect GET /', function() {
     this.timeout(10000); // need extra time for redirects
 
