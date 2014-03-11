@@ -16,9 +16,6 @@
     
     "devDependencies": {
         "express": "*",
-        "supertest": "*",
-        "nodeunit": "*", 
         "zombie": "*",
-        "request": "*"
     }
 }
