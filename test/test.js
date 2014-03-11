@@ -1,34 +1,38 @@
 
-var request = require('supertest');
+var url = require('url');
 var express = require('express');
 var assert = require('assert');
 var Browser = require('zombie');
 var auth = require('..'); // module
 
+var protocol = 'http';
+var hostname = 'localhost';
+var port = 3000;
+var site = url.format({
+    protocol: protocol,
+    hostname: hostname,
+    port: port
+})
 
-
-var initializeExpressApp = function() {
+var runTestServer = function(callback) {
 
     var app = express();
 
     app.use(express.cookieParser('secret'));
     app.use(express.session());
-
-    app.use(auth({ service: 'localhost:3000' }));
+    app.use(auth({ service: site }));
 
     app.get('/', function(req, res) {
-        res.send(200, {name: 'test'});
+        // hackity hack, send auth data in <auth> tags
+        res.send(200, '<auth>'+JSON.stringify(req.session.auth)+'</auth>');
     });
-    app.get('/get_session_auth', function(req, res) {
-        res.send({auth: req.session.auth });
-    })
 
-    return app;
+    app.listen(port, callback);
 };
 
 
-describe('Environment', function() {
-    it('USR and PWD environment vars must exist', function() {
+describe('USR and PWD environment vars', function() {
+    it('must exist to run tests', function() {
         assert.ok(process.env.PWD);
         assert.ok(process.env.USR);
     });
@@ -44,7 +48,7 @@ describe('Initialization', function() {
 
     describe('.auth({options})', function() {
         it('should initialize without error', function() {
-            auth({ service: 'localhost:3000' });
+            auth({ service: site });
         });
     });
 });
@@ -54,19 +58,9 @@ describe('With authentication', function() {
     this.timeout(10000); // need extra time for redirects
 
     beforeEach(function(done) {
-
-        this.app = initializeExpressApp();
-
-        request(this.app)
-        .get('/')
-        .expect(307)
-        .end(function(err, res) {
-
-            if (err) done(err);
-
-            var location = res.get('location'); // redirect url
-            browser = new Browser();
-            browser.visit(location)
+        var browser = this.browser = new Browser({ site: site });
+        runTestServer(function() {
+            browser.visit('/')
             .then(function() {
                 browser.fill('username', process.env.USR);
                 browser.fill('password', process.env.PWD);
@@ -74,19 +68,40 @@ describe('With authentication', function() {
             })
             .then(function() {
                 // should redirect to localhost app
-                console.log(browser.location);
-                assert.equal(browser.location.hostname, '127.0.0.1');
+                describe('CAS server', function() {
+                    it('should redirect to localhost', function() {
+                        assert.equal(browser.location.hostname, 'localhost');
+                    });
+                });
             })
             .then(done, done);
         });
     });
 
-    describe('', function() {
-        it('should exist', function(done) {
-            request(this.app)
-            .get('/get_session_auth')
-            .expect(400, done)
-        });
+    it('should connect', function(done) {
+        var browser = this.browser;
+        browser.visit('/')
+        .then(function() {
+
+            assert.ok(browser.success);
+
+            var auth = JSON.parse(browser.text('auth'));
+            describe('Auth session should exist', function() {
+                it('', function() {
+                    assert.ok(auth);
+                });
+                it('with netid field', function() {
+                    assert.ok(auth.netid);        
+                });        
+                it('with name field', function() {
+                    assert.ok(auth.name);        
+                });     
+                it('with username field', function() {
+                    assert.ok(auth.username);        
+                });     
+            });
+        })
+        .then(done, done);
     });
 
 });
