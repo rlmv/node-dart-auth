@@ -7,12 +7,12 @@ var auth = require('..'); // module
 
 var protocol = 'http';
 var hostname = 'localhost';
-var port = 3000;
+var port = 4000;
 var site = url.format({
     protocol: protocol,
     hostname: hostname,
     port: port
-})
+});
 
 var runTestServer = function(callback) {
 
@@ -103,7 +103,6 @@ describe('With authentication', function() {
         })
         .then(done, done);
     });
-
 });
 
 
