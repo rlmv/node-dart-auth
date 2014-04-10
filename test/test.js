@@ -84,6 +84,7 @@ describe('With authentication', function() {
         .then(function() {
 
             assert.ok(browser.success);
+            assert.equal(browser.location.pathname, '/');
 
             var auth = JSON.parse(browser.text('auth'));
             describe('Auth session should exist', function() {
