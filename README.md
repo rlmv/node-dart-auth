@@ -22,9 +22,5 @@ Express sessions must be enabled higher up in the middleware chain than authenti
 Testing
 -------
 Unit tests are written in Mocha. You need a valid Dartmouth NetId and password to run the tests:
-    
-    USR=netid PWD='password' make test
-
-or
 
     make USR=netid PWD='password' test
